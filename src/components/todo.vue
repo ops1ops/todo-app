@@ -1,89 +1,149 @@
 <template>
+  <!-- 
+    везде между атрибутом равно и значением пробелы или только при переносах:
+    нужно так: class="todo" или class = "todo"
+  -->
   <div class="todo">
-
     <v-container fluid>
       <v-layout row wrap>
-        <v-text-field v-model="newTitle" label="Todo's title" class="mr-5"></v-text-field>
-        <v-text-field v-model="newText" label="What you want to do" class="mr-2"></v-text-field>
-        <v-btn dark color="teal lighten-1" @click="addTodo">Add to list</v-btn>
+        <v-text-field 
+          class   = "mr-5"
+          v-model = "newTitle" 
+          label   = "Todo's title" 
+        ></v-text-field>
+        <v-text-field 
+          class   = "mr-2"
+          v-model = "newText" 
+          label   = "What you want to do" 
+        ></v-text-field>
+        <v-btn 
+          color  = "teal lighten-1" 
+          @click = "addTodo"
+          dark
+        >Add to list</v-btn> 
+        <!-- 
+          если текст в теге делать как выше или так:
+          <v-btn 
+            color  = "teal lighten-1" 
+            @click = "addTodo"
+            dark
+          >
+            Add to list
+          </v-btn>
+        -->
       </v-layout>
     </v-container>
 
-  <v-container fluid>
-    <p v-if="uncompletedCount() === 1" class="headline">You have {{uncompletedCount()}} uncompleted task:</p>
-    <p v-if="uncompletedCount() > 1" class="headline">You have {{uncompletedCount()}} uncompleted tasks:</p>
-    <p v-if="uncompletedCount() < 1" class="headline">You did everything</p>
-    <v-list v-if="todos.length > 0" two-line light>
-      <template v-for="(todo, index) in todos">
-        <v-list-tile
-          :key="index"
-          avatar
-        >
-          <v-list-tile-avatar>
-            <v-checkbox v-model="todo.isDone" color="success"></v-checkbox>
-          </v-list-tile-avatar>
-          <v-list-tile-content> 
-            <v-list-tile-title :class="[todo.isDone ? 'grey--text' : '']">
-              <input type="text" v-model="todo.title"/>
-            </v-list-tile-title>
-            <v-list-tile-sub-title>
-              <input type="text" v-model="todo.text"/>
-            </v-list-tile-sub-title>
-            <v-btn small dark absolute color="teal" depressed fab right @click="removeTodo(index)">
-              <v-icon>delete_outline</v-icon>
-            </v-btn> 
-          </v-list-tile-content>
-        </v-list-tile>
-      </template>
-    </v-list>
-    <h1 class="text-xs-center headline" v-else>Your list is empty. Good job</h1>
-
-    
-
-  </v-container>
-    
-
+    <v-container fluid>
+      <p class="headline"> {{ currentStatus }} </p>
+      <v-list 
+        v-if="todos.length" 
+        two-line 
+        light
+      >
+        <template v-for="(todo, index) in todos">
+          <v-list-tile
+            :key="index"
+            avatar
+          >
+            <v-list-tile-avatar>
+              <v-checkbox
+                color   = "success" 
+                v-model = "todo.isDone" 
+              ></v-checkbox>
+            </v-list-tile-avatar>
+            <v-list-tile-content> 
+              <v-list-tile-title :class="[todo.isDone ? 'grey--text' : '']">
+                <input 
+                  type    = "text" 
+                  v-model = "todo.title"
+                />
+              </v-list-tile-title>
+              <v-list-tile-sub-title>
+                <input 
+                  type    = "text" 
+                  v-model = "todo.text"
+                />
+              </v-list-tile-sub-title>
+              <v-btn 
+                color="teal" 
+                @click="removeTodo(index)"
+                small 
+                dark 
+                absolute 
+                depressed 
+                fab 
+                right 
+              >
+                <v-icon>delete_outline</v-icon>
+              </v-btn> 
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
+      </v-list>
+      <h1 
+        class = "text-xs-center headline" 
+        v-else
+      >Your list is empty. Good job</h1>
+    </v-container>
   </div>
 </template>
 
 <script>
-
   export default {
-    name: 'todo',
+    name: 'Todo',
     data() {
       return {
-        newTitle: '',
-        newText: '',
-        todos: [
+        newTitle  : '',
+        newText   : '',
+        todos     : [
           {
-            title: 'Book',
-            text: 'read a book',
-            isDone: true
+            title   : 'Book',
+            text    : 'read a book',
+            isDone  : true
           }
         ]
       }
     },
     methods: {
-      addTodo: function () {
+      addTodo () {
         if (this.newTitle && this.newText) {
-          if (this.todos.find(el => el.title === this.newTitle) === undefined) {
+          let isUniqTitle = this.todos.find(
+            el => el.title === this.newTitle
+          );
+          if (!isUniqTitle) {
             this.todos.push({
-              title: this.newTitle,
-              text: this.newText,
-              isDone: false
+              title   : this.newTitle,
+              text    : this.newText,
+              isDone  : false
           })
           this.newTitle = '';
-          this.newText = '';
+          this.newText  = '';
           }
         }
       },
-      removeTodo: function (index) {
+      removeTodo (index) {
         this.todos.splice(index, 1);
       },
-      uncompletedCount: function () {
+      uncompletedCount () {
         if (this.todos.length > 0) return this.todos.filter(el => el.isDone === false).length
+      }
+    },
+    computed: {
+      currentStatus() {
+        if (this.todos.length) {
+          let uncompletedCount = this.uncompletedCount();
+          if (uncompletedCount > 1) {
+            return `You have ${ uncompletedCount } uncompleted tasks:`;
+          }
+          else if (uncompletedCount === 1) {
+            return `You have ${ uncompletedCount } uncompleted task:`;
+          }
+          else {
+            return 'You did everything';
+          }
+        }
       }
     }
   }
-
 </script>

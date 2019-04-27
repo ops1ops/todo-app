@@ -2,7 +2,7 @@
   <v-app>
 
     <v-content>
-      <todo/>
+      <Todo/>
     </v-content>
   </v-app>
   
@@ -10,12 +10,12 @@
 
 <script>
 
-import todo from './components/todo'
+import Todo from './components/todo'
 
 export default {
   name: 'App',
   components: {
-    todo
+    Todo
   },
   data () {
     return {
