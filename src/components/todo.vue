@@ -16,15 +16,19 @@
     <v-list v-if="todos.length > 0" two-line light>
       <template v-for="(todo, index) in todos">
         <v-list-tile
-          :key="todo.title"
+          :key="index"
           avatar
         >
           <v-list-tile-avatar>
             <v-checkbox v-model="todo.isDone" color="success"></v-checkbox>
           </v-list-tile-avatar>
           <v-list-tile-content> 
-            <v-list-tile-title :class="[todo.isDone ? 'grey--text' : '']"><input type="text" v-model="todo.title"></v-list-tile-title>
-            <v-list-tile-sub-title ><input type="text" v-model="todo.text"></v-list-tile-sub-title>
+            <v-list-tile-title :class="[todo.isDone ? 'grey--text' : '']">
+              <input type="text" v-model="todo.title"/>
+            </v-list-tile-title>
+            <v-list-tile-sub-title>
+              <input type="text" v-model="todo.text"/>
+            </v-list-tile-sub-title>
             <v-btn small dark absolute color="teal" depressed fab right @click="removeTodo(index)">
               <v-icon>delete_outline</v-icon>
             </v-btn> 
@@ -54,7 +58,7 @@
           {
             title: 'Book',
             text: 'read a book',
-            isDone: false
+            isDone: true
           }
         ]
       }
