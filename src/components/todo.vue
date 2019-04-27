@@ -126,23 +126,25 @@
         this.todos.splice(index, 1);
       },
       uncompletedCount () {
-        if (this.todos.length > 0) return this.todos.filter(el => el.isDone === false).length
+        if (this.todos.length > 0) {
+          return this.todos.filter(
+            el => el.isDone === false
+          ).length;
+        }
       }
     },
     computed: {
       currentStatus() {
-        if (this.todos.length) {
-          let uncompletedCount = this.uncompletedCount();
-          if (uncompletedCount > 1) {
-            return `You have ${ uncompletedCount } uncompleted tasks:`;
-          }
-          else if (uncompletedCount === 1) {
-            return `You have ${ uncompletedCount } uncompleted task:`;
-          }
-          else {
-            return 'You did everything';
-          }
+        let uncompletedCount = this.uncompletedCount();
+        if (uncompletedCount > 1) {
+          return `You have ${ uncompletedCount } uncompleted tasks:`;
         }
+        else if (uncompletedCount === 1) {
+          return `You have ${ uncompletedCount } uncompleted task:`;
+        }
+        else if (uncompletedCount === 0) {
+          return 'You did everything';
+        }   
       }
     }
   }
