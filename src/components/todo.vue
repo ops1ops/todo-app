@@ -17,9 +17,9 @@
           label   = "What you want to do" 
         ></v-text-field>
         <v-btn 
-          color  = "teal lighten-1" 
-          @click = "addTodo"
-          dark
+          color     = "teal lighten-1 white--text" 
+          @click    = "addTodo"
+          :disabled = "!isValid()"
         >Add to list</v-btn> 
         <!-- 
           если текст в теге делать как выше или так:
@@ -32,6 +32,14 @@
           </v-btn>
         -->
       </v-layout>
+      <p 
+        class   = "subheading red--text"
+        v-show  = "!isEmptyInputs()"
+      >Input fields should be filled</p>
+      <p 
+        class   = "subheading red--text"
+        v-show  = "newTitle.length > 0 && !isUniqTitle()"
+      >Todo's title should be unique</p>
     </v-container>
 
     <v-container fluid>
@@ -106,20 +114,26 @@
       }
     },
     methods: {
+      isEmptyInputs () {
+        if (this.newTitle && this.newText) return true;
+      },
+      isUniqTitle () {
+        if (!this.todos.find(
+          el => el.title === this.newTitle
+        )) return true;
+      },
+      isValid () {
+        if (this.isEmptyInputs() && this.isUniqTitle()) return true;
+      },
       addTodo () {
-        if (this.newTitle && this.newText) {
-          let isUniqTitle = this.todos.find(
-            el => el.title === this.newTitle
-          );
-          if (!isUniqTitle) {
-            this.todos.push({
-              title   : this.newTitle,
-              text    : this.newText,
-              isDone  : false
-          })
+        if (this.isValid()) {
+          this.todos.push({
+            title   : this.newTitle,
+            text    : this.newText,
+            isDone  : false
+          });
           this.newTitle = '';
           this.newText  = '';
-          }
         }
       },
       removeTodo (index) {
